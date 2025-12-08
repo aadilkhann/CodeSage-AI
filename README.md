@@ -171,10 +171,10 @@ MIT License - See [LICENSE](LICENSE) file for details
 
 ## 📧 Contact
 
-- **Author**: Your Name
-- **Email**: your.email@example.com
-- **LinkedIn**: [Your Profile](https://linkedin.com/in/yourprofile)
-- **Portfolio**: [Your Website](https://yourwebsite.com)
+- **Author**: Adil Khan
+- **Email**: khan01970@gmail.com
+- **LinkedIn**: [Profile](žhttps://www.linkedin.com/in/khan01970/)
+- **Portfolio**: [Website](https://yourwebsite.com)
 
 ---
 
