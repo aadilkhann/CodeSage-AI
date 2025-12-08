@@ -73,11 +73,14 @@ management:
         enabled: true
 
 # Custom Application Properties
-codesage:
+app:
   jwt:
     secret: ${JWT_SECRET}
-    expiration: 3600000  # 1 hour in milliseconds
-    refresh-expiration: 604800000  # 7 days in milliseconds
+    access-token-expiration: 3600000  # 1 hour in milliseconds
+    refresh-token-expiration: 604800000  # 7 days in milliseconds
+  
+  frontend:
+    url: ${FRONTEND_URL:http://localhost:5173}
   
   ai-service:
     url: http://localhost:8000
@@ -92,6 +95,7 @@ codesage:
     allowed-methods: GET,POST,PUT,DELETE,OPTIONS
     allowed-headers: "*"
     allow-credentials: true
+
 
 # Logging Configuration
 logging:
