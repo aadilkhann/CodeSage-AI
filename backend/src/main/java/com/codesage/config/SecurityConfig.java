@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 /**
  * SecurityConfig - Configure Spring Security
@@ -49,88 +50,96 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final OAuth2SuccessHandler oAuth2SuccessHandler;
+        private final CorsConfigurationSource corsConfigurationSource;
 
-    /**
-     * Configure security filter chain
-     * 
-     * THOUGHT PROCESS:
-     * This is the heart of Spring Security configuration.
-     * We define:
-     * - Which endpoints are public vs protected
-     * - How authentication works (OAuth2 + JWT)
-     * - Session management (stateless)
-     * - CORS settings
-     * - Filter order
-     * 
-     * @param http HttpSecurity builder
-     * @return SecurityFilterChain
-     */
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                // Disable CSRF
-                // Why? We're using JWT (not cookies), so CSRF doesn't apply
-                // CSRF protects against cookie-based attacks
-                // JWT in Authorization header is not vulnerable to CSRF
-                .csrf(csrf -> csrf.disable())
+        /**
+         * Configure security filter chain
+         * 
+         * THOUGHT PROCESS:
+         * This is the heart of Spring Security configuration.
+         * We define:
+         * - Which endpoints are public vs protected
+         * - How authentication works (OAuth2 + JWT)
+         * - Session management (stateless)
+         * - CORS settings
+         * - Filter order
+         * 
+         * @param http HttpSecurity builder
+         * @return SecurityFilterChain
+         */
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                // Enable CORS with configuration from CorsConfig
+                                // Must be before CSRF as CORS preflight requests don't include CSRF tokens
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource))
 
-                // Configure endpoint authorization
-                .authorizeHttpRequests(auth -> auth
-                        // Public endpoints (no authentication required)
-                        .requestMatchers(
-                                "/api/v1/auth/**", // Auth endpoints (login, callback, refresh)
-                                "/api/v1/webhooks/**", // GitHub webhooks (verified by signature)
-                                "/actuator/health", // Health check
-                                "/actuator/info", // App info
-                                "/error" // Error page
-                        ).permitAll()
+                                // Disable CSRF
+                                // Why? We're using JWT (not cookies), so CSRF doesn't apply
+                                // CSRF protects against cookie-based attacks
+                                // JWT in Authorization header is not vulnerable to CSRF
+                                .csrf(csrf -> csrf.disable())
 
-                        // All other endpoints require authentication
-                        .anyRequest().authenticated())
+                                // Configure endpoint authorization
+                                .authorizeHttpRequests(auth -> auth
+                                                // Public endpoints (no authentication required)
+                                                .requestMatchers(
+                                                                "/api/v1/auth/**", // Auth endpoints (login, callback,
+                                                                                   // refresh)
+                                                                "/api/v1/webhooks/**", // GitHub webhooks (verified by
+                                                                                       // signature)
+                                                                "/actuator/health", // Health check
+                                                                "/actuator/info", // App info
+                                                                "/error" // Error page
+                                                ).permitAll()
 
-                // Configure OAuth2 login
-                .oauth2Login(oauth2 -> oauth2
-                        // Where to redirect after successful GitHub login
-                        .successHandler(oAuth2SuccessHandler)
+                                                // All other endpoints require authentication
+                                                .anyRequest().authenticated())
 
-                        // OAuth2 endpoints
-                        .authorizationEndpoint(authorization -> authorization
-                                // Frontend initiates login by redirecting to this endpoint
-                                .baseUri("/oauth2/authorize"))
-                        .redirectionEndpoint(redirection -> redirection
-                                // GitHub redirects here after user authorizes
-                                .baseUri("/api/v1/auth/github/callback")))
+                                // Configure OAuth2 login
+                                .oauth2Login(oauth2 -> oauth2
+                                                // Where to redirect after successful GitHub login
+                                                .successHandler(oAuth2SuccessHandler)
 
-                // Configure session management
-                // STATELESS: No server-side sessions
-                // Each request must include JWT token
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                                // OAuth2 endpoints
+                                                .authorizationEndpoint(authorization -> authorization
+                                                                // Frontend initiates login by redirecting to this
+                                                                // endpoint
+                                                                .baseUri("/oauth2/authorize"))
+                                                .redirectionEndpoint(redirection -> redirection
+                                                                // GitHub redirects here after user authorizes
+                                                                .baseUri("/api/v1/auth/github/callback")))
 
-                // Add JWT filter before Spring Security's authentication filter
-                // Order matters! JWT filter must run first to set authentication
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                                // Configure session management
+                                // STATELESS: No server-side sessions
+                                // Each request must include JWT token
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-        return http.build();
-    }
+                                // Add JWT filter before Spring Security's authentication filter
+                                // Order matters! JWT filter must run first to set authentication
+                                .addFilterBefore(
+                                                jwtAuthenticationFilter,
+                                                UsernamePasswordAuthenticationFilter.class);
 
-    /**
-     * Password encoder bean
-     * 
-     * THOUGHT PROCESS:
-     * - BCrypt is industry standard for password hashing
-     * - We use it to hash GitHub access tokens before storing
-     * - Why hash? If database is compromised, tokens are protected
-     * - BCrypt automatically handles salt and multiple rounds
-     * 
-     * @return PasswordEncoder
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+                return http.build();
+        }
+
+        /**
+         * Password encoder bean
+         * 
+         * THOUGHT PROCESS:
+         * - BCrypt is industry standard for password hashing
+         * - We use it to hash GitHub access tokens before storing
+         * - Why hash? If database is compromised, tokens are protected
+         * - BCrypt automatically handles salt and multiple rounds
+         * 
+         * @return PasswordEncoder
+         */
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
