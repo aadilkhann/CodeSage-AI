@@ -82,6 +82,9 @@ app:
   frontend:
     url: ${FRONTEND_URL:http://localhost:5173}
   
+  backend:
+    url: ${BACKEND_URL:http://localhost:8080}
+  
   ai-service:
     url: http://localhost:8000
     timeout: 120000  # 2 minutes
