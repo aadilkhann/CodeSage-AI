@@ -34,6 +34,11 @@ app.add_middleware(
 # Include routers
 app.include_router(health.router, prefix="/health", tags=["Health"])
 
+# Import and include analysis routers
+from app.routers import analyze, patterns
+app.include_router(analyze.router, prefix="/ai", tags=["Analysis"])
+app.include_router(patterns.router, prefix="/ai", tags=["Patterns"])
+
 # Root endpoint
 @app.get("/")
 async def root():
