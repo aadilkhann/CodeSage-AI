@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { Filter } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/Card';
-import Button from '@/components/ui/Button';
+import { Card, CardBody } from '@/components/ui/Card';
 import { Suggestion } from '@/types/pullRequest';
 import SuggestionCard from './SuggestionCard';
 

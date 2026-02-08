@@ -18,6 +18,11 @@ public interface SuggestionRepository extends JpaRepository<Suggestion, UUID> {
     List<Suggestion> findByAnalysis(Analysis analysis);
 
     /**
+     * Find all suggestions by analysis ID
+     */
+    List<Suggestion> findByAnalysisId(UUID analysisId);
+
+    /**
      * Find suggestions by status
      */
     List<Suggestion> findByAnalysisAndStatus(Analysis analysis, String status);
@@ -42,6 +47,11 @@ public interface SuggestionRepository extends JpaRepository<Suggestion, UUID> {
      * Count suggestions by status
      */
     long countByAnalysisAndStatus(Analysis analysis, String status);
+
+    /**
+     * Count all suggestions for an analysis
+     */
+    long countByAnalysisId(UUID analysisId);
 
     /**
      * Calculate suggestion acceptance rate

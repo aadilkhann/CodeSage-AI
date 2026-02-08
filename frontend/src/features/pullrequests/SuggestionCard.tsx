@@ -3,6 +3,7 @@ import { Check, X, FileCode, TrendingUp } from 'lucide-react';
 import { Card, CardBody } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
+import { CodeViewer } from '@/components/code/CodeDiffViewer';
 import { Suggestion } from '@/types/pullRequest';
 import { useAppDispatch } from '@/store/hooks';
 import { updateSuggestion } from '@/store/slices/pullRequestSlice';
@@ -41,6 +42,28 @@ export default function SuggestionCard({ suggestion }: SuggestionCardProps) {
             case 'minor': return 'minor';
             default: return 'default';
         }
+    };
+
+    const getLanguageFromFileName = (filename: string): string => {
+        const ext = filename.split('.').pop()?.toLowerCase();
+        const languageMap: Record<string, string> = {
+            'js': 'javascript',
+            'jsx': 'javascript',
+            'ts': 'typescript',
+            'tsx': 'typescript',
+            'py': 'python',
+            'java': 'java',
+            'cpp': 'cpp',
+            'c': 'c',
+            'cs': 'csharp',
+            'go': 'go',
+            'rs': 'rust',
+            'rb': 'ruby',
+            'php': 'php',
+            'swift': 'swift',
+            'kt': 'kotlin',
+        };
+        return languageMap[ext || ''] || 'plaintext';
     };
 
     return (
@@ -88,11 +111,22 @@ export default function SuggestionCard({ suggestion }: SuggestionCardProps) {
                             <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Suggested Fix:
                             </p>
-                            <div className="bg-gray-900 dark:bg-gray-950 p-4 rounded-lg overflow-x-auto">
-                                <pre className="text-sm text-green-400 font-mono">
-                                    {suggestion.suggestedFix}
-                                </pre>
-                            </div>
+                            <CodeViewer
+                                code={suggestion.suggestedFix}
+                                language={getLanguageFromFileName(suggestion.filePath)}
+                                fileName={suggestion.filePath}
+                                highlightLines={
+                                    suggestion.lineNumber && suggestion.lineEnd
+                                        ? Array.from(
+                                            { length: suggestion.lineEnd - suggestion.lineNumber + 1 },
+                                            (_, i) => suggestion.lineNumber! + i
+                                        )
+                                        : suggestion.lineNumber
+                                            ? [suggestion.lineNumber]
+                                            : []
+                                }
+                                height="250px"
+                            />
                         </div>
                     )}
 

@@ -95,6 +95,20 @@ public class Analysis {
     private String errorMessage;
 
     /**
+     * Progress percentage (0-100)
+     * Used for progress bar in UI
+     */
+    @Column(name = "progress")
+    private Integer progress = 0;
+
+    /**
+     * Current progress message
+     * Example: "Analyzing code with AI"
+     */
+    @Column(name = "progress_message", length = 500)
+    private String progressMessage;
+
+    /**
      * Flexible metadata stored as JSONB
      * 
      * Example metadata:

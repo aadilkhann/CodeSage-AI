@@ -130,6 +130,12 @@ public class Suggestion {
     @Column(name = "user_feedback", columnDefinition = "TEXT")
     private String userFeedback;
 
+    /**
+     * When user responded to suggestion (accepted/rejected)
+     */
+    @Column(name = "responded_at")
+    private LocalDateTime respondedAt;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -166,6 +172,7 @@ public class Suggestion {
     public void accept(String feedback) {
         this.status = "accepted";
         this.userFeedback = feedback;
+        this.respondedAt = LocalDateTime.now();
     }
 
     /**
@@ -174,5 +181,15 @@ public class Suggestion {
     public void reject(String feedback) {
         this.status = "rejected";
         this.userFeedback = feedback;
+        this.respondedAt = LocalDateTime.now();
+    }
+
+    // Accessor methods for service compatibility
+    public void setFeedback(String feedback) {
+        this.userFeedback = feedback;
+    }
+
+    public String getFeedback() {
+        return this.userFeedback;
     }
 }

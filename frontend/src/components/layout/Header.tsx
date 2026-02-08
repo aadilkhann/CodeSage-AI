@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Code2, LogOut, User, Settings } from 'lucide-react';
+import { Code2, LogOut } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { logout } from '@/store/slices/authSlice';
 import Button from '../ui/Button';
@@ -87,8 +87,8 @@ function NavLink({ to, active, children }: NavLinkProps) {
         <Link
             to={to}
             className={`text-sm font-medium transition-colors hover:text-indigo-600 dark:hover:text-indigo-400 ${active
-                    ? 'text-indigo-600 dark:text-indigo-400'
-                    : 'text-gray-600 dark:text-gray-300'
+                ? 'text-indigo-600 dark:text-indigo-400'
+                : 'text-gray-600 dark:text-gray-300'
                 }`}
         >
             {children}

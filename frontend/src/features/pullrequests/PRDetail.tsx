@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Play, GitBranch, Calendar, User } from 'lucide-react';
+import { ArrowLeft, Play, GitBranch, User } from 'lucide-react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -12,7 +12,7 @@ import SuggestionList from './SuggestionList';
 export default function PRDetail() {
     const { id } = useParams<{ id: string }>();
     const dispatch = useAppDispatch();
-    const { selectedPR, currentAnalysis, suggestions } = useAppSelector((state) => state.pullRequests);
+    const { selectedPR, currentAnalysis: _currentAnalysis, suggestions } = useAppSelector((state) => state.pullRequests);
     const [activeTab, setActiveTab] = useState<'overview' | 'suggestions'>('overview');
     const [analyzing, setAnalyzing] = useState(false);
 
@@ -125,8 +125,8 @@ export default function PRDetail() {
                         <button
                             onClick={() => setActiveTab('overview')}
                             className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'overview'
-                                    ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400'
-                                    : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400'
+                                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                                 }`}
                         >
                             Overview
@@ -134,8 +134,8 @@ export default function PRDetail() {
                         <button
                             onClick={() => setActiveTab('suggestions')}
                             className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'suggestions'
-                                    ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400'
-                                    : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400'
+                                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                                 }`}
                         >
                             Suggestions ({suggestions.length})

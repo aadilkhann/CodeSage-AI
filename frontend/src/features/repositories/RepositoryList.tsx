@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Search, RefreshCw } from 'lucide-react';
 import MainLayout from '@/components/layout/MainLayout';
-import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/Card';
+import { Card, CardBody } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchRepositories } from '@/store/slices/repositorySlice';

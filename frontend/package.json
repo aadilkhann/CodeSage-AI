@@ -20,6 +20,7 @@
         "axios": "^1.6.0",
         "@stomp/stompjs": "^7.0.0",
         "sockjs-client": "^1.6.1",
+        "monaco-editor": "^0.45.0",
         "@monaco-editor/react": "^4.6.0",
         "lucide-react": "^0.263.0",
         "clsx": "^2.0.0",

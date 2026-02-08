@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Settings, Trash2, GitBranch, Calendar } from 'lucide-react';
+import { Settings, Trash2, GitBranch } from 'lucide-react';
 import { Card, CardBody } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';

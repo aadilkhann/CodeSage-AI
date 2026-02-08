@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { websocketClient, MessageHandler } from '@/services/websocket';
+import { websocketClient } from '@/services/websocket';
 import { useAppDispatch } from '@/store/hooks';
 import { setCurrentAnalysis, addSuggestion } from '@/store/slices/pullRequestSlice';
 
