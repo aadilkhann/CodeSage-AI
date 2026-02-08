@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import Login from './features/auth/Login';
@@ -8,59 +8,61 @@ import RepositoryList from './features/repositories/RepositoryList';
 import PRList from './features/pullrequests/PRList';
 import PRDetail from './features/pullrequests/PRDetail';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import MainLayout from './components/layout/MainLayout';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 function App() {
     return (
-        <Provider store={store}>
-            <BrowserRouter>
-                <Routes>
-                    {/* Public routes */}
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/auth/callback" element={<Callback />} />
-
-                    {/* Protected routes */}
-                    <Route
-                        path="/dashboard"
-                        element={
-                            <ProtectedRoute>
-                                <Dashboard />
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    <Route
-                        path="/repositories"
-                        element={
-                            <ProtectedRoute>
-                                <RepositoryList />
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    <Route
-                        path="/pull-requests"
-                        element={
-                            <ProtectedRoute>
-                                <PRList />
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    <Route
-                        path="/pull-requests/:id"
-                        element={
-                            <ProtectedRoute>
-                                <PRDetail />
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    {/* Default redirect */}
-                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                </Routes>
-            </BrowserRouter>
-        </Provider>
+        <ErrorBoundary>
+            <Provider store={store}>
+                <Router>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/callback" element={<Callback />} />
+                        <Route
+                            path="/"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <Dashboard />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/repositories"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <RepositoryList />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/repositories/:repoId/pulls"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <PRList />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/repositories/:repoId/pulls/:prId"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <PRDetail />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Routes>
+                </Router>
+            </Provider>
+        </ErrorBoundary>
     );
 }
 
